@@ -47,21 +47,21 @@ class Perceptron():
             support_vector = np.append(support_vector, 0)
         return support_vector
         
-    def check_positive_defined_matrix(self, dim):
-        """ Function define and correct no positive defined matrix
-            :params dim: train set dimention 
-            :return: none
-        """
-        A = self.alpha[:dim**2]
-        A = A.reshape(dim, dim)
-        matrix = np.linalg.inv(A)
-        eigen_values, eigen_vectors = np.linalg.eigh(matrix)
-
-        #findind non-positive eigenvalues of matrix
-        if (list(filter(lambda x: np.any(x <= 0), eigen_values))):
-            negative_eigenval_index = list(eigen_values).index(list(filter(lambda x: np.any(x <= 0), eigen_values)))
-            etta = self.make_support_vector(eigen_vectors[:,negative_eigenval_index], dim)
-            self.alpha += etta
+    # def check_positive_defined_matrix(self, dim):
+    #     """ Function define and correct no positive defined matrix
+    #         :params dim: train set dimention
+    #         :return: none
+    #     """
+    #     A = self.alpha[:dim**2]
+    #     A = A.reshape(dim, dim)
+    #     matrix = np.linalg.inv(A)
+    #     eigen_values, eigen_vectors = np.linalg.eigh(matrix)
+    #
+    #     #findind non-positive eigenvalues of matrix
+    #     if (list(filter(lambda x: np.any(x <= 0), eigen_values))):
+    #         negative_eigenval_index = list(eigen_values).index(list(filter(lambda x: np.any(x <= 0), eigen_values)))
+    #         etta = self.make_support_vector(eigen_vectors[:,negative_eigenval_index], dim)
+    #         self.alpha += etta
     
 
 
@@ -86,9 +86,18 @@ class Perceptron():
                 if (np.dot(ksi,self.alpha) <= 0 and target[row_index] == 0):
                     correction_isneeded = True
                     self.alpha += ksi
-                    self.steps += 1 
-                
-            self.check_positive_defined_matrix(dim)
+                    self.steps += 1
+
+            A = self.alpha[:dim ** 2]
+            A = A.reshape(dim, dim)
+            matrix = np.linalg.inv(A)
+            eigen_values, eigen_vectors = np.linalg.eigh(matrix)
+            # findind non-positive eigenvalues of matrix
+            if (list(filter(lambda x: np.any(x <= 0), eigen_values))):
+                correction_isneeded = True
+                negative_eigenval_index = list(eigen_values).index(list(filter(lambda x: np.any(x <= 0), eigen_values)))
+                etta = self.make_support_vector(eigen_vectors[:, negative_eigenval_index], dim)
+                self.alpha += etta
         return self
 
     def predict(self, X):
