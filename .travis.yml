@@ -1,4 +1,7 @@
-language: ruby
-rvm:
- - 2.2
- - jruby
+language: python 
+python: 
+  - "3.8.6" 
+install: 
+  - pip3 install numpy
+script:
+  - python -m doctest -v Recognition_lab_2.py 
