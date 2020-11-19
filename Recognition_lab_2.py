@@ -1,10 +1,9 @@
 import json
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from pandas import DataFrame
-from mlxtend.plotting import plot_decision_regions
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+#from mlxtend.plotting import plot_decision_regions
+
 
 
 distribution = lambda x: ((1 - np.sign(x))/2).astype(np.int)
@@ -54,7 +53,8 @@ class Perceptron():
             :return: none
         """
         A = self.alpha[:dim**2]
-        matrix = A.reshape(dim, dim)
+        A = A.reshape(dim, dim)
+        matrix = np.linalg.inv(A)
         eigen_values, eigen_vectors = np.linalg.eigh(matrix)
 
         #findind non-positive eigenvalues of matrix
@@ -116,16 +116,16 @@ def main():
 
     sample = frame.iloc[:, 0:-1].to_numpy()
     targets = frame.iloc[:, -1].to_numpy()
-    Xtrain, Xtest, Ytrain, Ytest = train_test_split(sample, targets, test_size=0.3, random_state=1)
+
 
     clasifier = Perceptron()
-    clasifier.fit(Xtrain, Ytrain)
-    prediction = clasifier.predict(Xtest)
+    clasifier.fit(sample, targets)
+    prediction = clasifier.predict(sample)
     first_group_indexes = np.where(prediction == 1)
-    print ('true_values: {},\n prediction: {},\n accuracy: {},\n first_group_indexes: {}, \n alpha: {}'\
-           .format(Ytest, prediction, accuracy_score(Ytest, prediction),first_group_indexes, clasifier.alpha))
+    print ('true_values: {},\n prediction: {},\n first_group_indexes: {},\n alpha: {}'\
+           .format(targets, prediction ,first_group_indexes, clasifier.alpha))
 
-    # plot_decision_regions(Xtest, Ytest, clf=clasifier, legend=2)
+    # plot_decision_regions(sample, targets, clf=clasifier, legend=2)
     # # Adding axes annotations
     # plt.xlabel('x1')
     # plt.ylabel('x2')
