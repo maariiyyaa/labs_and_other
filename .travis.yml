@@ -1,7 +1,11 @@
 language: python 
 python: 
-  - "3.8.6" 
+  - "3.7.4" 
 install: 
   - pip3 install numpy
+  - pip3 install scikit-learn
+  - pip3 install pandas
+  - pip3 install mlxtend
+  - pip3 install matplotlib
 script:
-  - python Recognition_lab_2.py -v
+  - python -m doctest -v Recognition_lab_2.py 
