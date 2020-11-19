@@ -135,7 +135,7 @@ def main():
 #     plt.xlabel('x1')
 #     plt.ylabel('x2')
 #     plt.title('Perceptron on sample of Gaussian distribution')
-#      plt.show()
+#     plt.show()
 
 
 if __name__ == '__main__':
