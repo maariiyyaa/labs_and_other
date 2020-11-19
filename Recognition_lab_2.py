@@ -125,14 +125,13 @@ def main():
     print ('true_values: {},\n prediction: {},\n accuracy: {},\n first_group_indexes: {}, \n alpha: {}'\
            .format(Ytest, prediction, accuracy_score(Ytest, prediction),first_group_indexes, clasifier.alpha))
 
-    plot_decision_regions(Xtest, Ytest, clf=clasifier, legend=2)
-    # Adding axes annotations
-    plt.xlabel('x1')
-    plt.ylabel('x2')
-    plt.title('Perceptron on sample of Gaussian distribution')
-    plt.show()
-    import doctest
-    doctest.testmod()
+    # plot_decision_regions(Xtest, Ytest, clf=clasifier, legend=2)
+    # # Adding axes annotations
+    # plt.xlabel('x1')
+    # plt.ylabel('x2')
+    # plt.title('Perceptron on sample of Gaussian distribution')
+    # plt.show()
+
 
 if __name__ == '__main__':
     main()
