@@ -4,4 +4,4 @@ python:
 install: 
   - pip3 install numpy
 script:
-  - python -m doctest -v Recognition_lab_2.py 
+  - python Recognition_lab_2.py -v
