@@ -19,14 +19,11 @@ class Perceptron():
             :return: expanded vector of sample vector
 
         >>> a = Perceptron()
-        >>> a.make_expanded_vector([0.602314  , 0.48909991], 2)
-        array([0.36278215, 0.29459172, 0.29459172, 0.23921872, 0.602314  ,
-               0.48909991, 1.        ])
+        >>> a.make_expanded_vector([2  , 3], 2)
+        array([4, 6, 6, 9, 2, 3, 1])
        
-        >>> a.make_expanded_vector([0.602314  , 0.48909991, 0.3445601], 3)
-        array([0.36278215, 0.29459172, 0.20753337, 0.29459172, 0.23921872,
-               0.16852431, 0.20753337, 0.16852431, 0.11872166, 0.602314  ,
-               0.48909991, 0.3445601 , 1.        ])
+        >>> a.make_expanded_vector([2, 3, 1], 3)
+        array([4, 6, 2, 6, 9, 3, 2, 3, 1, 2, 3, 1, 1])
         """
         ksi = np.einsum('i,j->ij', vector, vector).ravel()
         for vector_index in range(dim):    
@@ -40,13 +37,11 @@ class Perceptron():
             :return: support vector
 
         >>> a = Perceptron()
-        >>> a.make_support_vector([0.602314  , 0.48909991, 0.3445601], 3)
-        array([0.36278215, 0.29459172, 0.20753337, 0.29459172, 0.23921872,
-               0.16852431, 0.20753337, 0.16852431, 0.11872166, 0.        ,
-               0.        , 0.        , 0.        ])
+        >>> a.make_support_vector([2, 3, 4], 3)
+        array([ 4,  6,  8,  6,  9, 12,  8, 12, 16,  0,  0,  0,  0])
        
-        >>> a.make_support_vector([0.602314] , 1)
-        array([0.36278215, 0.        , 0.        ])
+        >>> a.make_support_vector([5] , 1)
+        array([25,  0,  0])
         """
         support_vector = np.einsum('i,j->ij',list_,list_).ravel()
         for j in range(dim + 1):    
