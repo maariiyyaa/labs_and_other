@@ -60,7 +60,7 @@ class Perceptron():
         #findind non-positive eigenvalues of matrix
         if (list(filter(lambda x: np.any(x <= 0), eigen_values))):
             negative_eigenval_index = list(eigen_values).index(list(filter(lambda x: np.any(x <= 0), eigen_values)))
-            etta = self.make_support_vector(eigen_vectors[negative_eigenval_index], dim)
+            etta = self.make_support_vector(eigen_vectors[:,negative_eigenval_index], dim)
             self.alpha += etta
     
 
