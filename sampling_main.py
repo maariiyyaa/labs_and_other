@@ -48,19 +48,19 @@ def sampling(matrix, shape, eps):
         params: matrix - (n x m x 3) matrix of pixel classes along with their probabilities
                 shape - matrix shape
                 eps - Probability that the neighbor has different class
-        return: new_matrix - new matrix of pixel classes along with their probabilities
+        return: matrix - updated matrix of pixel classes along with their probabilities
    """
 
-    new_matrix = zeros(shape=shape, dtype=float32)
+    # new_matrix = zeros(shape=shape, dtype=float32)
     for i in range(shape[0]):
         for j in range(shape[1]):
             neighbors = find_neighbors(matrix, i, j)
             k1 = matrix[i, j][1] * reduce(lambda a, b: a * b, [(1 - eps) if x == 1 else eps for x in neighbors])
             k2 = matrix[i, j][2] * reduce(lambda a, b: a * b, [(1 - eps) if x == 0 else eps for x in neighbors])
             prob_k1, prob_k2 = k1 / (k1 + k2), k2 / (k1 + k2)
-            new_matrix[i, j, 0] = (1 if prob_k1 > prob_k2 else 0)
-            new_matrix[i, j, 1:] = prob_k1, prob_k2
-    return new_matrix
+            matrix[i, j, 0] = (1 if prob_k1 > prob_k2 else 0)
+            matrix[i, j, 1:] = prob_k1, prob_k2
+    return matrix
 
 
 def main():
