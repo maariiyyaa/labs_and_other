@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 
 # ### task 1. linear regression
 
-# In[3]:
+# In[2]:
 
 
 #sample initialization
@@ -30,7 +30,7 @@ plt.legend(loc='upper left')
 plt.show()
 
 
-# In[4]:
+# In[3]:
 
 
 class LineasRegression():
@@ -40,8 +40,8 @@ class LineasRegression():
         return cost
     
     def cost_dev(self, a,b, x, y):
-        dev_a = (1/len(x))*sum(x*(x*a+b - y))
-        dev_b = (1/len(x))*sum(x*a+b - y)
+        dev_a = (1/len(x))*sum(x*(self.predict(x) - y))
+        dev_b = (1/len(x))*sum(self.predict(x) - y)
         return (dev_a, dev_b)
     
     
@@ -50,10 +50,11 @@ class LineasRegression():
         a, b = 0, 1
         for _ in range(epochs): 
             # Gradient Descent
+            self.weights = a, b
             a, b = map(lambda x,y : x-lr*y, (a,b), self.cost_dev(a, b, x, y))       
             loss.append(self.cost_function(x, a, b)) 
             
-        self.weights = a, b
+        
         self.loss = loss
         
     
@@ -62,7 +63,7 @@ class LineasRegression():
     
 
 
-# In[5]:
+# In[4]:
 
 
 model = LineasRegression()
@@ -73,7 +74,7 @@ print(f'found a: {a},\nfound b: {b}\n')
 print(f'deviation a: {abs(a - a_true)},\ndeviation b: {abs(b - b_true)}')
 
 
-# In[6]:
+# In[5]:
 
 
 plt.plot(range(len(model.loss)), model.loss, label='loss')
@@ -81,7 +82,7 @@ plt.legend(loc='upper left')
 plt.show()
 
 
-# In[7]:
+# In[6]:
 
 
 plt.scatter(x, y, s=20, c='b', marker = '.', label='sample')
