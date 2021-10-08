@@ -254,5 +254,3 @@ def find_markup(structure, shape):
     return 1
 
 
-
-
