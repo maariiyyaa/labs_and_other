@@ -193,6 +193,7 @@ def diffusion(structure, shape, iterations):
                 for p in range(len(neighbors_arcs)):
                     for n, m in product((0, 1), repeat=2):
                         structure[i][j][c_n[p]][(n, m)] = update_arcs[p][count]
+                        structure[c_n[p][0], c_n[p][1]][(i,j)][(m, n)] = update_arcs[p][count]
                         count += 1
                     count = 0
     return structure
