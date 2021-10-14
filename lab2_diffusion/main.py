@@ -58,15 +58,23 @@ def main():
     eps = find_max_eps(marked_image_data)
     print(f'max eps= {eps}')
 
-    markup_exists = 1
-    matrix_copy = zeros(shape=((2, 3)), dtype=float)
-    while markup_exists != 0 and (matrix_copy.all() != marked_image_data.all() or (eps - eps/3) > 2):
-        matrix_copy = copy.deepcopy(marked_image_data)
+    matrix_copy1 = zeros(shape=((2,3)) , dtype=float)
+    matrix_copy2 = zeros(shape=((2,3)) , dtype=float)
+
+
+    while eps-eps/2>2:
+        matrix_copy1 = copy.deepcopy(marked_image_data)
         eps = eps/3
         print(f'eps= {eps}')
-        remove_low_arcs(marked_image_data, eps)
-        markup_exists = find_markup(marked_image_data, shape)
-        final_marks = mark_final_image(matrix_copy)
+        markup_exists = 1
+        update_exisis = 1
+        remove_low_arcs(matrix_copy1, eps)
+        while markup_exists != 0 and update_exisis != 0:
+            matrix_copy2 = copy.deepcopy(matrix_copy1)
+            markup_exists, update_exisis = find_markup(matrix_copy1, shape)
+            print(markup_exists, update_exisis)
+    
+        final_marks = mark_final_image(matrix_copy2)    
         plt.imshow(final_marks)
         plt.show()
 
