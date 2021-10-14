@@ -93,9 +93,12 @@ def define_arcs_structure(matrix, eps, shape):
                 new_matrix[i, j][n_idx] = {}
                 for k_current, k_neigh in product((0, 1), repeat=2):
                     # update empty value. set a tuple of marks as a key and arc's weight as value
-                    new_matrix[i, j][n_idx][(k_current, k_neigh)] = (log(eps) if k_current != k_neigh else log(
-                        1 - eps)) + matrix[i, j, k_current] + matrix[n_idx[0], n_idx[1]][k_neigh]
-
+                    new_matrix[i,j][n_idx][(k_current, k_neigh)] = (
+                                    (log(eps) if k_current != k_neigh else log(1-eps))
+                                    +(matrix[i,j,k_current])/(len(neighbors))
+                                    +(matrix[n_idx[0], n_idx[1]][k_neigh])/(len(find_neighbors_coord( n_idx[0], n_idx[1], *shape[:2])))
+                    )
+                    
     return new_matrix
 
 
@@ -252,5 +255,7 @@ def find_markup(structure, shape):
                         print("markup doesn't exist")
                         return 0
     return 1
+
+
 
 
