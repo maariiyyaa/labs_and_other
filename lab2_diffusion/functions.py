@@ -206,6 +206,7 @@ def find_markup(structure, shape):
     :param shape: shape of structure
     :return: 1 if marup exist for current structure, else 0
     """
+    flag = 0
     for i, j in ndindex((shape[0], shape[1])):
         # find two lists: 1) neighbors' indices
         #                 2) arcs from pix (i, j) to neighbors pixels (arcs keys and their values)
@@ -241,9 +242,10 @@ def find_markup(structure, shape):
                                 # will say that we don't have a murkup
                                 count += 1
                                 structure[i][j][neighbors[a]].pop(arc_classes, 0)
+                                flag = 1
                                 if count == len(arcs_copy[a]):
                                     print("confusion: markup doesn't exist")
-                                    return 0
+                                    return 0, flag
                     continue
                 else:
                     # if we don't have current arc from neighbor to pix (i, j) then we need to delete this arc
@@ -251,11 +253,12 @@ def find_markup(structure, shape):
                     false_count += 1
                     # len_tmp = len(arcs_copy[a])
                     structure[i][j][neighbors[a]].pop(arc_classes, 0)
+                    flag = 1
                     # and if we delete all arcs then we don't have a markup
                     if false_count == len(arcs_copy[a]):
                         print("markup doesn't exist")
-                        return 0
-    return 1
+                        return 0, flag
+    return 1, flag
 
 
 
