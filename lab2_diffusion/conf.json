@@ -1,7 +1,0 @@
-{
-  "path_to_file": "img.jpg",
-  "epsilon": 0.2,
-  "height": 256,
-  "width": 300,
-  "diff_iterations": 2
-}
