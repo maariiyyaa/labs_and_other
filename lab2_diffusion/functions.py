@@ -261,5 +261,15 @@ def find_markup(structure, shape):
     return 1, flag
 
 
+def cut_superfluous_arcs(eps, marked_image_data):
+    print(f'eps= {eps}')
+    markup_exists = 1
+    update_exisis = 1
+    matrix_copy1 = copy.deepcopy(marked_image_data)
+    remove_low_arcs(matrix_copy1, eps)
+    while markup_exists != 0 and update_exisis!=0:
+        markup_exists, update_exisis = find_markup(matrix_copy1, shape)
+        print(markup_exists, update_exisis)
+    return markup_exists, matrix_copy1
 
 
