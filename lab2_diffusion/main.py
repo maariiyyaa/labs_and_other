@@ -44,40 +44,54 @@ def main():
     print(f'segment_2 COV MATRIX\n {segment_2_cov}\n')
     print(f'segment_2 COV MATRIX shape \t {segment_2_cov.shape}')
 
-    # initiate height x width x 2 matrix
-    marked_image_data = zeros(shape=(*(shape)[:2], 2), dtype=float)
 
-    for i in range(shape[0]):
-        for j in range(shape[1]):
-            #find log probabilities of a pixel belonging to classes
-            marked_image_data[i][j] = log_likelyhood(img_tenzor[i][j], segment_1_mean, segment_2_mean, segment_1_cov,
-                                                     segment_2_cov)
-
-    marked_image_data = define_arcs_structure(marked_image_data, epsilon, shape)
-    marked_image_data = diffusion(marked_image_data, shape, iterations)
-    eps = find_max_eps(marked_image_data)
-    print(f'max eps= {eps}')
-
-    matrix_copy1 = zeros(shape=((2,3)) , dtype=float)
-    matrix_copy2 = zeros(shape=((2,3)) , dtype=float)
-
-
-    while eps-eps/2>2:
-        matrix_copy1 = copy.deepcopy(marked_image_data)
-        eps = eps/3
-        print(f'eps= {eps}')
-        markup_exists = 1
-        update_exisis = 1
-        remove_low_arcs(matrix_copy1, eps)
-        while markup_exists != 0 and update_exisis != 0:
-            matrix_copy2 = copy.deepcopy(matrix_copy1)
-            markup_exists, update_exisis = find_markup(matrix_copy1, shape)
-            print(markup_exists, update_exisis)
     
-        final_marks = mark_final_image(matrix_copy2)    
-        plt.imshow(final_marks)
-        plt.show()
+def cut_superfluous_arcs(eps, marked_image_data):
+    print(f'eps= {eps}')
+    markup_exists = 1
+    update_exisis = 1
+    matrix_copy1 = copy.deepcopy(marked_image_data)
+    remove_low_arcs(matrix_copy1, eps)
+    while markup_exists != 0 and update_exisis!=0:
+        markup_exists, update_exisis = find_markup(matrix_copy1, shape)
+        print(markup_exists, update_exisis)
+    return markup_exists, matrix_copy1
 
+
+
+
+# initiate height x width x 2 matrix
+marked_image_data  = zeros(shape=(*(shape)[:2], 2) , dtype=float)
+
+for i in range(shape[0]):
+    for j in range(shape[1]):
+        marked_image_data[i][j] = log_likelyhood(img_tenzor[i][j], segment_1_mean, segment_2_mean, segment_1_cov, segment_2_cov)
+
+
+        
+marked_image_data = define_arcs_structure(marked_image_data, 0.2, shape)       
+marked_image_data = diffusion(marked_image_data, shape, 2)
+eps = find_max_eps(marked_image_data)
+print(f'max eps= {eps}')
+
+
+while eps-eps/3>0.5:
+    markup_exists, matrix_copy1 = cut_superfluous_arcs(eps/3, marked_image_data)
+    if markup_exists == 0:
+        matrix_copy1 = matrix_copy2
+        break
+    else:
+        matrix_copy2 = copy.deepcopy(matrix_copy1)
+    
+    eps = eps/3
+    
+    final_marks = mark_final_image(matrix_copy1)    
+    plt.imshow(final_marks)
+    plt.show()
+    
+final_marks = mark_final_image(matrix_copy1)    
+plt.imshow(final_marks)
+plt.show()
     print(f'time:  {time.process_time() - t}')
 
 if __name__ == '__main__':
