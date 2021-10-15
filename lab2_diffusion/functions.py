@@ -262,6 +262,12 @@ def find_markup(structure, shape):
 
 
 def cut_superfluous_arcs(eps, marked_image_data):
+    """
+    
+    :param structure: n x m matrix of neighbor structure for each pixel
+    :param eps: parameter epsilon
+    :return: tuple: 1 if marup exist for current structure, else 0 and new matrix of neighbor structure for each pixel
+    """
     print(f'eps= {eps}')
     markup_exists = 1
     update_exisis = 1
