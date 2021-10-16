@@ -43,9 +43,9 @@ def main():
     print(f'segment_2 COV MATRIX shape \t {segment_2_cov.shape}')
 
 
-    # initiate step for epsilon devision
+    # initialize step for epsilon devision
     step = 3
-    # initiate height x width x 2 matrix
+    # initialize height x width x 2 matrix
     marked_image_data  = zeros(shape=(*(shape)[:2], 2) , dtype=float)
 
     for i in range(shape[0]):
