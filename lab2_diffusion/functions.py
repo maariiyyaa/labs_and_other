@@ -108,7 +108,7 @@ def find_max_eps(matrix):
     :param matrix: n x m matrix of neighbor structure for each pixel
     :return: difference between max arc and min arc of structure
     """
-    # initiate min/max arcs
+    # initialize min/max arcs
     max_arc = -1000
     min_arc = 1000
     for i, j in ndindex(matrix.shape[:2]):
