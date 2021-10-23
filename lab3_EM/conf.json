@@ -1,0 +1,8 @@
+{
+  "path_to_file": "ipt.png",
+  "height": 256,
+  "width": 256,
+  "EM_iters": 100,
+  "sampling_iters": 100,
+  "epsilon": 0.2
+}
