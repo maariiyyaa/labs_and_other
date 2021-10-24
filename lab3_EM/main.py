@@ -27,11 +27,11 @@ def main():
     # sumarize shape
     print(f' img shape {img_tenzor.shape}')
 
-    params_1, params_2, probabilities  = EM_fit(img_tenzor, 100)
+    params_1, params_2, probabilities  = EM_fit(img_tenzor, EM_iters)
     print(f'class probabilities:  {probabilities}')
     print('\n class 1 params:', *params_1, sep='\n')
     print('\n class 2 params:', *params_2, sep='\n')
-    marked_image_data = EM_predict(img_tenzor, params_1, params_2, 100, 0.2)
+    marked_image_data = EM_predict(img_tenzor, params_1, params_2, sampling_iters, epsilon)
 
     plt.imshow(marked_image_data)
     plt.show()
