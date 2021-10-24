@@ -21,39 +21,35 @@ def norm_pdf_multivariate(x, mu, sigma):
     else:
         raise NameError("The dimensions of the input don't match")
 
+        
 
 @jit(nopython=True)
 def likelyhood(pixel_color_list, mu1, cov1, mu2, cov2):
     pdf_1 = norm_pdf_multivariate(pixel_color_list, mu1, cov1)
     pdf_2 = norm_pdf_multivariate(pixel_color_list, mu2, cov2)
-
     return randint(0, 1), pdf_1, pdf_2
 
-
-# In[4]:
 
 
 @jit(nopython=True)
 def expectation(img_tenzor, p_k1, p_k2, mu1, mu2, cov1, cov2, shape):
-    alpha_matrix = np.zeros(shape=(*shape, 2), dtype=float32)
+    
+    alpha_matrix  = np.zeros(shape=(*shape, 2), dtype=float32)
     pk_matrix = np.zeros(shape=(*shape, 2), dtype=float32)
     alpha_1_sum = 0
-    alpha_2_sum = 0
+    alpha_2_sum = 0  
     for i in range(shape[0]):
         for j in range(shape[1]):
             _, like_1, like_2 = likelyhood(img_tenzor[i][j], mu1, cov1, mu2, cov2)
-            numerator1, numerator2 = (p_k1 * like_1), (p_k2 * like_2)
-            alpha_1, alpha_2 = numerator1 / (numerator1 + numerator2), numerator2 / (numerator1 + numerator2)
+            numerator1, numerator2 = (p_k1*like_1), (p_k2*like_2)
+            alpha_1, alpha_2 = numerator1/(numerator1+numerator2), numerator2/(numerator1+numerator2)
             alpha_matrix[i][j] = alpha_1, alpha_2
             alpha_1_sum += alpha_1
             alpha_2_sum += alpha_2
-            p_k1 = alpha_1_sum / (shape[0] * shape[1])
-            p_k2 = alpha_2_sum / (shape[0] * shape[1])
+    p_k1 = alpha_1_sum/(shape[0]*shape[1])
+    p_k2 = alpha_2_sum/(shape[0]*shape[1])
+    return alpha_matrix, alpha_1_sum, alpha_2_sum, p_k1, p_k2
 
-    return alpha_matrix, alpha_1_sum, alpha_2_sum
-
-
-# In[5]:
 
 
 @jit(nopython=True)
@@ -69,8 +65,6 @@ def maximization(img_tenzor, alpha_matrix, alpha_1_sum, alpha_2_sum, mu1, mu2, c
     return mu1, mu2, cov1, cov2
 
 
-# In[6]:
-
 
 @jit(nopython=True)
 def find_neighbors(matrix, i, j):
@@ -78,6 +72,7 @@ def find_neighbors(matrix, i, j):
                  [(0, -1), (0, 1), (-1, 0), (1, 0)]
                  if ((0 <= i + step[0] < len(matrix)) and (0 <= j + step[1] < len(matrix[0])))]
     return neighbors
+
 
 
 @jit(nopython=True)
@@ -94,23 +89,21 @@ def sampling(matrix, eps, shape):
     return new_matrix
 
 
-# In[7]:
-
 
 def EM_fit(img_tenzor, em_iters=100):
     shape = img_tenzor.shape
-    p_k1 = 1 / 2.
-    p_k2 = 1 / 2.
-    mu1 = np.array([50, 50, 50], dtype=np.float64)
-    mu2 = np.array([200, 170, 200], dtype=np.float64)
-    cov1 = np.array([[10 ** 2, 2 ** 2, 2 ** 2], [2 ** 2, 10 ** 2, 2 ** 2], [2 ** 2, 2 ** 2, 10 ** 2]], dtype=np.float64)
-    cov2 = np.array([[10 ** 2, 2 ** 2, 2 ** 2], [2 ** 2, 10 ** 2, 2 ** 2], [2 ** 2, 2 ** 2, 10 ** 2]], dtype=np.float64)
+    p_k1 = 1/2.
+    p_k2 = 1/2.
+    mu1 = np.array([50,50,50], dtype=np.float64)
+    mu2 = np.array([200,170,200], dtype=np.float64)
+    cov1 = np.array([[10**2,2**2,2**2], [2**2, 10**2, 2**2],[2**2, 2**2, 10**2]], dtype=np.float64)
+    cov2 = np.array([[10**2,2**2,2**2], [2**2, 10**2, 2**2],[2**2, 2**2, 10**2]], dtype=np.float64)
 
     for iteration in range(em_iters):
-        alpha_matrix, alpha_1_sum, alpha_2_sum = expectation(img_tenzor, p_k1, p_k2, mu1, mu2, cov1, cov2, shape[:2])
-        mu1, mu2, cov1, cov2 = maximization(img_tenzor, alpha_matrix, alpha_1_sum, alpha_2_sum, mu1, mu2, cov1, cov2,
-                                            shape[2])
-    return ((mu1, cov1), (mu2, cov2))
+        alpha_matrix, alpha_1_sum, alpha_2_sum, p_k1, p_k2 = expectation(img_tenzor, p_k1, p_k2, mu1, mu2, cov1, cov2, shape[:2])
+        mu1, mu2, cov1, cov2 = maximization(img_tenzor, alpha_matrix, alpha_1_sum, alpha_2_sum, mu1, mu2, cov1, cov2, shape[2])
+    return ((mu1, cov1), (mu2, cov2), (p_k1, p_k2))   
+
 
 
 def EM_predict(img_tenzor, params_1, params_2, sampling_iters=100, eps=0.2):
