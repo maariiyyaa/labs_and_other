@@ -17,7 +17,7 @@ def norm_pdf_multivariate(x, mu, sigma):
         x_mu = x - mu
         inv = np.linalg.inv(sigma)
         result = math.pow(math.e, -0.5 * ((x_mu).dot(inv).dot(x_mu.T)))
-        return norm_const * result
+        return max(norm_const * result, pow(10, -9))
     else:
         raise NameError("The dimensions of the input don't match")
 
@@ -42,7 +42,7 @@ def expectation(img_tenzor, p_k1, p_k2, mu1, mu2, cov1, cov2, shape):
         for j in range(shape[1]):
             _, like_1, like_2 = likelyhood(img_tenzor[i][j], mu1, cov1, mu2, cov2)
             numerator1, numerator2 = (p_k1*like_1), (p_k2*like_2)
-            alpha_1, alpha_2 = numerator1/(numerator1+numerator2), numerator2/(numerator1+numerator2)
+            alpha_1, alpha_2 = max(numerator1/(numerator1+numerator2),  pow(10, -9)), max(numerator2/(numerator1+numerator2), pow(10, -9))
             alpha_matrix[i][j] = alpha_1, alpha_2
             alpha_1_sum += alpha_1
             alpha_2_sum += alpha_2
