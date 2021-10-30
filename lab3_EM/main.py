@@ -23,16 +23,18 @@ def main():
     image = Image.open(path_to_file).resize(size)
     plt.imshow(image)
     plt.show()
-    img_tenzor = np.asarray(image)
+    img_tensor = np.asarray(image)
     # sumarize shape
-    print(f' img shape {img_tenzor.shape}')
+    print(f' img shape {img_tensor.shape}')
 
-    params_1, params_2, probabilities  = EM_fit(img_tenzor, EM_iters)
+    params_1, params_2, probabilities  = EM_fit(img_tensor, EM_iters)
     print(f'class probabilities:  {probabilities}')
     print('\n class 1 params:', *params_1, sep='\n')
     print('\n class 2 params:', *params_2, sep='\n')
-    marked_image_data = EM_predict(img_tenzor, params_1, params_2, sampling_iters, epsilon)
-
+    marked_image_data = EM_predict(img_tensor, params_1, params_2, sampling_iters, epsilon)
+    
+    marked_image_data = np.expand_dims(marked_image_data, axis=2)
+    marked_image_data = np.tile(marked_image_data, (1, 1, 3))
     plt.imshow(marked_image_data)
     plt.show()
 
