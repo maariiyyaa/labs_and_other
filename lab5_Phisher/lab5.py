@@ -293,7 +293,7 @@ if __name__ == '__main__':
     preprocess.show_etalons(etalons)
 
     train_rows, train_row_length = 10, 100
-    test_rows, test_row_length = 20, 100
+    test_rows, test_row_length = 100, 100
 
     img_width, img_height = etalons.shape[1], etalons.shape[2]
     one_img_length = img_height * img_width
