@@ -207,30 +207,30 @@ class Phisher:
                 result = i
         return result
 
-    def predict(self, alpha, pixels_list, y):
+    def predict(self, alpha, pixels_list):
         """
         Predicts idxs of symbols
         :param alpha: array with alpha values
         :param pixels_list: array with images' pixels corresponded to selected idxs
-        :param y: array with labels
-        :return: array with 0 and 1 values: if 1 => correct prediction, 0 => incorrect prediction
+        :return: array with predicted idxs of symbols
         """
         num_pred = self.test_rows * self.test_row_length
         predictions = np.zeros(num_pred)
         for i in range(num_pred):
             test_slice = self.get_slice(pixels_list, self.one_img_length * i, self.one_img_length)
-            if y[i] == self.predict_one_image(alpha, test_slice):
-                predictions[i] = 1
+            predictions[i] = self.predict_one_image(alpha, test_slice)
         return predictions
 
     @staticmethod
-    def evaluate(y_pred):
+    def evaluate(y_true, y_pred):
         """
         Calculates accuracy score
-        :param y_pred: array with 0 and 1 values: if 1 => correct prediction, 0 => incorrect prediction
+        :param y_true: array with true labels
+        :param y_pred: array with predicted labels
         :return: accuracy score in %
         """
-        return np.sum(y_pred) / len(y_pred) * 100
+        check_pred = np.where(y_true == y_pred, 1, 0)
+        return np.sum(check_pred) / len(y_pred) * 100
 
     def plot_result(self, y, pixels_list, y_pred, all_etalons_img, one_res_img_rows=20):
         """
@@ -308,10 +308,10 @@ if __name__ == '__main__':
     all_etalons_img = phisher.create_alpha_img(alpha, etalons)
 
     print('Prediction process')
-    y_pred = phisher.predict(alpha, test_pixels_list, test_numbers_list)
+    y_pred = phisher.predict(alpha, test_pixels_list)
 
     print('Evaluating')
-    accuracy = phisher.evaluate(y_pred)
+    accuracy = phisher.evaluate(test_numbers_list, y_pred)
     print('Accuracy: {}%'.format(accuracy))
 
     phisher.plot_result(test_numbers_list, test_pixels_list, y_pred, all_etalons_img)
