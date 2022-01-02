@@ -227,41 +227,50 @@ class Phisher:
         Calculates accuracy score
         :param y_true: array with true labels
         :param y_pred: array with predicted labels
-        :return: accuracy score in %
+        :return: accuracy score in %, array with 0 and 1 values: if 1 => correct prediction, 0 => incorrect prediction
         """
         check_pred = np.where(y_true == y_pred, 1, 0)
-        return np.sum(check_pred) / len(y_pred) * 100
+        return np.sum(check_pred) / len(y_pred) * 100, check_pred
+    
+    @staticmethod
+    def expand_dim(array):
+        """
+        Converts 1 channel array to 3 channels array
+        :param array: array to be converted
+        :return: array with 3 channels
+        """
+        array = np.expand_dims(array, axis=2)
+        array = np.tile(array, (1, 1, 3))
+        return array
 
     def plot_result(self, y, pixels_list, y_pred, all_etalons_img, one_res_img_rows=20):
         """
         Plots result. Incorect predictions are underlined
         :param y: array with correct labels
         :param pixels_list: array with images' pixels corresponded to chosed idxs
-        :param y_pred: array with predicted labels
+        :param y_pred: array with 0 and 1 values: if 1 => correct prediction, 0 => incorrect prediction
         :param all_etalons_img: array with all etalons image in one image
         :param one_res_img_rows: number of rows to be plotted on one image
         """
         index = 0
         current_index = 0
         slice = (self.img_width * 2 + self.num_of_etalons)
-        array_of_zeros = np.zeros((self.num_of_etalons, self.img_height, 3))
-        array_of_zeros[:, :, 0] = 255
-        all_etalons_img = np.expand_dims(all_etalons_img, axis=2)
-        all_etalons_img = np.tile(all_etalons_img, (1, 1, 3))
+        underline = np.zeros((self.num_of_etalons, self.img_height, 3))
+        underline[:, :, 0] = 255
+        all_etalons_img = self.expand_dim(all_etalons_img)
         for k in range(int(self.test_rows / one_res_img_rows)):
             height = slice * one_res_img_rows
             img = np.full((height, self.test_row_length * self.img_height, 3), 255)
             for i in range(one_res_img_rows):
                 for j in range(self.test_row_length):
-                    extra_img = pixels_list[index:index + self.one_img_length].reshape((self.img_width, self.img_height))
-                    extra_img = np.expand_dims(extra_img, axis=2)
-                    extra_img = np.tile(extra_img, (1, 1, 3))
+                    symbols = pixels_list[index:index + self.one_img_length].reshape((self.img_width, self.img_height))
+                    symbols = self.expand_dim(symbols)
                     index += self.test_row_length
-                    img[slice * i:slice * i + self.img_width, self.img_height * j:self.img_height * (j + 1)] = extra_img
+                    img[slice * i:slice * i + self.img_width, self.img_height * j:self.img_height * (j + 1)] = symbols
                     img[slice * i + self.img_width:slice * i + 2 * self.img_width,
                     self.img_height * j:self.img_height * (j + 1)] = all_etalons_img[:self.img_width, self.img_height * y[current_index]:self.img_height * y[current_index] + self.img_height]
                     if y_pred[current_index] == 0:
-                        img[slice * i + 2 * self.img_width:slice * i + slice, self.img_height * j:self.img_height * (j + 1)] = array_of_zeros
+                        img[slice * i + 2 * self.img_width:slice * i + slice, self.img_height * j:self.img_height * (j + 1)] = underline
                     current_index += 1
 
             if self.verbose:
@@ -311,7 +320,7 @@ if __name__ == '__main__':
     y_pred = phisher.predict(alpha, test_pixels_list)
 
     print('Evaluating')
-    accuracy = phisher.evaluate(test_numbers_list, y_pred)
+    accuracy, check_pred = phisher.evaluate(test_numbers_list, y_pred)
     print('Accuracy: {}%'.format(accuracy))
 
-    phisher.plot_result(test_numbers_list, test_pixels_list, y_pred, all_etalons_img)
+    phisher.plot_result(test_numbers_list, test_pixels_list, check_pred, all_etalons_img)
