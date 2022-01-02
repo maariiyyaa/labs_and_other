@@ -18,17 +18,19 @@ class Preprocessing:
         self.data = data
         self.mean = mean
         self.cov = cov
-
-    def rotate(self, image):
+    
+    @staticmethod
+    def rotate(image):
         """
         Rotates image on 90 degrees. It is needed to get correct orientation of images from dataset
         :param image: image array
         :return: rotated image
         """
-        self.image = image.reshape([28, 28])
-        self.image = np.fliplr(self.image)
-        self.image = np.rot90(self.image)
-        return self.image
+        img_width, img_height = int(np.sqrt(image.shape[0])), int(np.sqrt(image.shape[0]))
+        image = image.reshape([img_width, img_height])
+        image = np.fliplr(image)
+        image = np.rot90(image)
+        return image
 
     def select_images(self, img_idxs):
         """
