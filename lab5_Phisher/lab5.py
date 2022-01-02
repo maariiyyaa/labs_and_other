@@ -245,7 +245,7 @@ class Phisher:
         current_index = 0
         slice = (self.img_width * 2 + self.num_of_etalons)
         array_of_zeros = np.zeros((self.num_of_etalons, self.img_height, 3))
-        array_of_zeros[:, :, 2] = 255
+        array_of_zeros[:, :, 0] = 255
         all_etalons_img = np.expand_dims(all_etalons_img, axis=2)
         all_etalons_img = np.tile(all_etalons_img, (1, 1, 3))
         for k in range(int(self.test_rows / one_res_img_rows)):
@@ -268,7 +268,8 @@ class Phisher:
                 plt.imshow(img, cmap=plt.get_cmap('gray'))
                 plt.axis("off")
                 plt.show()
-
+            
+            img = cv2.cvtColor(np.float32(img), cv2.COLOR_BGR2RGB)
             cv2.imwrite('result_{}'.format(str(k)) + '.png', img)
 
 
