@@ -175,10 +175,10 @@ class Perceptron():
 
     def _check_eig(self, alpha):
         """
-        Finds eigen vectors and their transformed versions. Also finds a product between alphas and transformed eigen vectors
+        Finds eigen vectors and their transformed versions. 
         :param alpha: transformed vector from initial properties
         :param dim: dimension of the X
-        :return: array with products of alphas and transformed eigen vectors, array with transformed eigen vectors
+        :return: array with transformed eigen vectors and eigen values
         """
         
         A = np.reshape(self.alpha[:self.dim**2], newshape=(self.dim, self.dim))
